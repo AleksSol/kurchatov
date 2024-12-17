@@ -1,4 +1,3 @@
-
 import logging
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
@@ -23,13 +22,14 @@ async def command_check(message: types.Message):
 
 @dp.message(Command("generate"))
 async def commang_generate(message: types.Message):
-    val=generate()
+    val = generate()
     await message.answer(val)
 
-#обработка текста
+# обработка текста
 @dp.message(F.text)
 async def echo(message: types.Message):
-    msg_text=message.text
+    if message.text[len(message.text) - 1] == '?':
+        await message.answer('Не знаю')
 
 
 async def main():
@@ -37,4 +37,3 @@ async def main():
 
 if __name__ == '__main__':
     asyncio.run(main())
-
