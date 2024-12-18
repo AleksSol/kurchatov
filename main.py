@@ -1,8 +1,11 @@
 import logging
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import StatesGroup, State
 from aiogram import F
 import asyncio
+
 
 import random
 
@@ -32,6 +35,7 @@ translit_dict = {
     '}': '}', 'A': 'Ф', 'S': 'Ы', 'D': 'В', 'F': 'А', 'G': 'П', 'H': 'Р', 'J': 'О', 'K': 'Л', 'L': 'Д', ':': ':',
     '"': '"', 'Z': 'Я', 'X': 'Ч', 'C': 'С', 'V': 'М', 'B': 'И', 'N': 'Т', 'M': 'Ь', '<': '<', '>': '>',
 }
+
 
 def transliterate(text):
     return ''.join(translit_dict.get(char, char) for char in text)
@@ -77,6 +81,18 @@ async def command_check(message: types.Message):
 async def commang_generate(message: types.Message):
     val = generate()
     await message.answer(val)
+
+@dp.message(Command("add_one"))
+async def add_one(message: types.Message, state: FSMContext):
+    user_data = await state.get_data()
+    await state.update_data(num=user_data.get('num', 0) + 1)
+
+
+@dp.message(Command("load_num"))
+async def commang_load_num(message: types.Message, state: FSMContext):
+    user_data = await state.get_data()
+    await message.answer(str(user_data.get('num', 0)))
+
 
 # обработка текста
 @dp.message(F.text)
